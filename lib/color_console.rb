@@ -41,11 +41,11 @@ module Console
                 self.clear_line (@status.length / self.width) + 1
             end
             @lock.synchronize do
-                @status_fg = opts.fetch(:text_color, opts.fetch(:color, :cyan))
-                @status_bg = opts[:background_color]
-                @status = status
                 @completed = nil
+                @status = status
                 if @status
+                    @status_fg = opts.fetch(:text_color, opts.fetch(:color, :cyan))
+                    @status_bg = opts[:background_color]
                     self.write @status, @status_fg, @status_bg
                 end
             end
@@ -80,6 +80,13 @@ module Console
         end
     end
     module_function :show_progress
+
+
+    # Clears any currently displayed progress bar.
+    def clear_progress
+        self.status nil
+    end
+    module_function :clear_progress
 
 end
 
