@@ -15,5 +15,5 @@ Console.status "Switching to long progress bar"
 sleep 2
 Console.show_progress "Long progress", 80, :bar_length => 100
 sleep 2
-Console.clear_line(2)
+Console.status nil
 

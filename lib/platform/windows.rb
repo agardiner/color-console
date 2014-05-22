@@ -141,7 +141,7 @@ module Console
 
     # Get the current console window size.
     #
-    # @return [Array, nil] Returns a two-dimensional array of [rows, cols], or
+    # @return [Array, nil] Returns a two-dimensional array of [cols, rows], or
     #   nil if the console has been redirected.
     def window_size
         buffer = Windows.get_buffer_info
@@ -217,6 +217,7 @@ module Console
 
     # Clears the current line
     def clear_line(lines = 1)
+        raise ArgumentError, "Number of lines to clear (#{lines}) must be > 0" if lines < 1
         buffer = Windows.get_buffer_info
         if buffer
             @lock.synchronize do

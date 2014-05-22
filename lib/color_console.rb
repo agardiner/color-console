@@ -38,7 +38,7 @@ module Console
         if self.width
             if @status
                 # Clear existing status
-                self.clear_line (@status.length / self.width)
+                self.clear_line (@status.length / self.width) + 1
             end
             @lock.synchronize do
                 @status_fg = opts.fetch(:text_color, opts.fetch(:color, :cyan))

@@ -40,12 +40,12 @@ module Console
 
     # Get the current console window size.
     #
-    # @return [Array, nil] Returns a two-dimensional array of [rows, cols], or
+    # @return [Array, nil] Returns a two-dimensional array of [cols, rows], or
     #   nil if the console has been redirected.
     def window_size
         rows = `tput lines`
         cols = `tput cols`
-        [rows.chomp.to_i, cols.chomp.to_i]
+        [cols.chomp.to_i, rows.chomp.to_i]
     end
     module_function :window_size
 
@@ -84,7 +84,7 @@ module Console
     # @see #write
     def puts(text = nil, fg = nil, bg = nil)
         if @status
-            self.clear_line (@status.length / self.width)
+            self.clear_line (@status.length / self.width) + 1
         end
         @lock.synchronize do
             write("#{text}", fg, bg)
@@ -101,6 +101,7 @@ module Console
     #
     # @param lines [Fixnum] Number of lines to clear
     def clear_line(lines = 1)
+        raise ArgumentError, "Number of lines to clear (#{lines}) must be > 0" if lines < 1
         @lock.synchronize do
             while lines > 0
                 STDOUT.write "\r\e[2K"
