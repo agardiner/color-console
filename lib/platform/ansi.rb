@@ -33,7 +33,7 @@ module Console
 
     # Sets the title bar text of the console window.
     def title=(text)
-        STDOUT.write "\033]0#{text}\007"
+        STDOUT.write "\e]0;#{text}\007"
     end
     module_function :title=
 
@@ -49,19 +49,19 @@ module Console
             reset = true
             if fg
                 fg_code = FOREGROUND_COLORS[fg] || fg
-                STDOUT.write "\033]#{fg_code}m"
+                STDOUT.write "\e[#{fg_code}m"
             end
 
             if bg
                 bg_code = BACKGROUND_COLORS[bg] || bg
-                STDOUT.write "\033]#{bg_code}m"
+                STDOUT.write "\e[#{bg_code}m"
             end
         end
 
         STDOUT.write text
 
         if reset
-            STDOUT.write "\033]0m"
+            STDOUT.write "\e[0m"
         end
     end
     module_function :write
