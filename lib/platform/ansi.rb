@@ -97,7 +97,9 @@ module Console
     module_function :puts
 
 
-    # Clears the current line
+    # Clears the current +lines+ line(s)
+    #
+    # @param lines [Fixnum] Number of lines to clear
     def clear_line(lines = 1)
         @lock.synchronize do
             while lines > 0
