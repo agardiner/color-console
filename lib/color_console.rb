@@ -35,15 +35,16 @@ module Console
     # @option opts [Symbol] :background_color The background color to use when
     #   rendering the status message
     def status(status, opts = {})
-        if width
+        if self.width
             if @status
                 # Clear existing status
-                self.clear_line (@status.length / self.width) + 1
+                self.clear_line (@status.length / self.width)
             end
             @lock.synchronize do
                 @status_fg = opts.fetch(:text_color, opts.fetch(:color, :cyan))
                 @status_bg = opts[:background_color]
                 @status = status
+                @completed = nil
                 if @status
                     self.write @status, @status_fg, @status_bg
                 end
@@ -63,7 +64,7 @@ module Console
     # @option opts [Fixnum] :total The total number of steps; default is 100.
     # @see #status for other supported options
     def show_progress(label, complete, opts = {})
-        if width
+        if self.width
             opts = {total: opts} if opts.is_a?(Fixnum)
             total = opts.fetch(:total, 100)
             complete = total if complete > total

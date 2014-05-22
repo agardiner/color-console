@@ -84,7 +84,7 @@ module Console
     # @see #write
     def puts(text = nil, fg = nil, bg = nil)
         if @status
-            self.clear_line (@status.length / self.width) + 1
+            self.clear_line (@status.length / self.width)
         end
         @lock.synchronize do
             write("#{text}", fg, bg)
@@ -103,7 +103,7 @@ module Console
     def clear_line(lines = 1)
         @lock.synchronize do
             while lines > 0
-                STDOUT.write "\e[2K"
+                STDOUT.write "\r\e[2K"
                 lines -= 1
                 STDOUT.write "\e[A" if lines > 0
             end
