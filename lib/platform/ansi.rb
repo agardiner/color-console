@@ -38,6 +38,18 @@ module Console
     module_function :title=
 
 
+    # Get the current console window size.
+    #
+    # @return [Array, nil] Returns a two-dimensional array of [rows, cols], or
+    #   nil if the console has been redirected.
+    def window_size
+        rows = `tput lines`
+        cols = `tput cols`
+        [rows.chomp.to_i, cols.chomp.to_i]
+    end
+    module_function :window_size
+
+
     # Write a line of text to the console, with optional foreground and
     # background colors.
     #
@@ -71,10 +83,31 @@ module Console
     #
     # @see #write
     def puts(text = nil, fg = nil, bg = nil)
-        write("#{text}", fg, bg)
-        STDOUT.write "\n"
+        if @status
+            self.clear_line (@status.length / self.width) + 1
+        end
+        @lock.synchronize do
+            write("#{text}", fg, bg)
+            STDOUT.write "\n"
+            if @status
+                self.write @status, @status_fg, @status_bg
+            end
+        end
     end
     module_function :puts
+
+
+    # Clears the current line
+    def clear_line(lines = 1)
+        @lock.synchronize do
+            while lines > 0
+                STDOUT.write "\e[2K"
+                lines -= 1
+                STDOUT.write "\e[A" if lines > 0
+            end
+        end
+    end
+    module_function :clear_line
 
 end
 
