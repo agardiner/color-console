@@ -118,7 +118,7 @@ module Console
         black: 0,
         dark_blue: BLUE,
         blue: BLUE | INTENSITY,
-        cyan: BLUE | GREEN,
+        cyan: BLUE | GREEN | INTENSITY,
         green: GREEN,
         light_green: GREEN | INTENSITY,
         red: RED,
