@@ -240,7 +240,7 @@ module Console
             y = buffer[:cursor_y]
             while lines > 0
                 Windows.set_cursor_position(0, y)
-                STDOUT.write ' ' * (buffer[:window_right] - buffer[:window_left] + 1)
+                STDOUT.write ' ' * (buffer[:window_right] - buffer[:window_left])
                 Windows.set_cursor_position(0, y)
                 lines -= 1
                 y -= 1
