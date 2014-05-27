@@ -86,7 +86,7 @@ module Console
             cell_lines
         end
         (0...line_count).each do |i|
-            _write(' ' * indent, fg, bg)
+            _write(' ' * indent)
             _write("#{col_sep} ", fg, bg) if col_sep
             line = (0...widths.size).map do |col|
                 "%#{row[col].is_a?(Numeric) ? '' : '-'}#{widths[col]}s" % lines[col][i]
@@ -110,7 +110,7 @@ module Console
         corner = opts.fetch(:corner, col_sep ? '+' * col_sep.length : '')
 
         sep_row = widths.map{ |width| row_sep * (width + 2) }
-        _write(' ' * indent, fg, bg)
+        _write(' ' * indent)
         _write(corner, fg, bg)
         _write(sep_row.join(corner), fg, bg)
         _write(corner, fg, bg)
