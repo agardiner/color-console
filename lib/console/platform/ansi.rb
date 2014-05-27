@@ -74,8 +74,8 @@ module Console
     # background colors.
     #
     # @param text [String] The text to be written to the console.
-    # @param fg [Symbol, Integer] An optional foreground colour name or value.
-    # @param bg [Symbol, Integer] An optional background color name or value.
+    # @param fg [Symbol, String] An optional foreground colour name or ANSI code.
+    # @param bg [Symbol, String] An optional background color name or ANSI code.
     def _write(text, fg = nil, bg = nil)
         if fg || bg
             reset = true
@@ -101,7 +101,9 @@ module Console
 
     # Send a line of text to the screen, terminating with a new-line.
     #
-    # @see #write
+    # @param text [String] The optional text to be written to the console.
+    # @param fg [Symbol, String] An optional foreground colour name or ANSI code.
+    # @param bg [Symbol, String] An optional background color name or ANSI code.
     def _puts(text = nil, fg = nil, bg = nil)
         if @status
             _clear_line (@status.length / self.width) + 1

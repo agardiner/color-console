@@ -217,7 +217,9 @@ module Console
 
     # Send a line of text to the screen, terminating with a new-line.
     #
-    # @see #_write
+    # @param text [String] The optional text to be written to the console.
+    # @param fg [Symbol, Integer] An optional foreground colour name or value.
+    # @param bg [Symbol, Integer] An optional background color name or value.
     def _puts(text = nil, fg = nil, bg = nil)
         if @status
             _clear_line (@status.length / self.width) + 1

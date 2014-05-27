@@ -6,10 +6,15 @@ MIXED_ROW = [17,
              'A very very very long column that should wrap multple lines',
              'Another medium length column']
 
+Console.send(:_calculate_widths, [HEADER_ROW, MIXED_ROW], 4, 80)
+Console.send(:_calculate_widths, [HEADER_ROW, MIXED_ROW], 4, 30)
+Console.send(:_calculate_widths, [HEADER_ROW, MIXED_ROW], 4, 20)
+
+
 Console.puts "---"
 Console.display_row(HEADER_ROW, [10, 10, 20, 20])
 Console.puts "---"
-Console.display_row(MIXED_ROW, [10, 10, 20, 20], indent: 8, col_sep: '|')
+Console.display_row(MIXED_ROW, [10, 10, 20, 20], indent: 4, col_sep: '|')
 
 Console.puts "--- Plain table"
 Console.display_table([HEADER_ROW, MIXED_ROW], col_widths: [10, 15, 20, 40])
@@ -22,6 +27,8 @@ Console.display_table([HEADER_ROW, MIXED_ROW], col_widths: [10, 15, 20, 40],
 Console.puts "--- Table with indent and color"
 Console.display_table([HEADER_ROW, MIXED_ROW], col_widths: [10, 15, 20, 40],
                       col_sep: '|', row_sep: '-', indent: 2, color: :black, background_color: :white)
+Console.puts "--- Table with calculated col widths"
+Console.display_table([HEADER_ROW, MIXED_ROW])
 
 Console.puts
 Console.display_row(['INFO', 'This is an info line'], [12, 60], text_color: :white)

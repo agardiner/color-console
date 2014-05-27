@@ -43,8 +43,8 @@ module Console
     # @see #puts
     #
     # @param text [String] The text to be written to the console.
-    # @param fg [Symbol, Integer] An optional foreground colour name or value.
-    # @param bg [Symbol, Integer] An optional background color name or value.
+    # @param fg [Symbol] An optional foreground colour name or value.
+    # @param bg [Symbol] An optional background color name or value.
     def write(text, fg = nil, bg = nil)
         @lock.synchronize do
             _write(text, fg, bg)
@@ -56,6 +56,10 @@ module Console
     # Send a line of text to the screen, terminating with a new-line.
     #
     # @see #write
+    #
+    # @param text [String] The optional text to be written to the console.
+    # @param fg [Symbol] An optional foreground colour name or value.
+    # @param bg [Symbol] An optional background color name or value.
     def puts(text = nil, fg = nil, bg = nil)
         @lock.synchronize do
             _puts(text, fg, bg)
