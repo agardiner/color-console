@@ -116,14 +116,21 @@ module Console
     # Constants for foreground and background colors
     FOREGROUND_COLORS = {
         black: 0,
-        dark_blue: BLUE,
         blue: BLUE | INTENSITY,
+        dark_blue: BLUE,
+        light_blue: BLUE | INTENSITY,
         cyan: BLUE | GREEN | INTENSITY,
         green: GREEN,
+        dark_green: GREEN,
         light_green: GREEN | INTENSITY,
-        red: RED,
+        red: RED | INTENSITY,
+        dark_red: RED,
         light_red: RED | INTENSITY,
+        magenta: RED | BLUE,
+        dark_magenta: RED | BLUE,
+        light_magenta: RED | BLUE | INTENSITY,
         yellow: GREEN | RED | INTENSITY,
+        gray: BLUE | GREEN | RED,
         dark_gray: INTENSITY,
         light_gray: BLUE | GREEN | RED,
         white: BLUE | GREEN | RED | INTENSITY
@@ -139,25 +146,35 @@ module Console
     module_function :title=
 
 
-    # Get the current console window size.
-    #
-    # @return [Array, nil] Returns a two-dimensional array of [cols, rows], or
-    #   nil if the console has been redirected.
-    def window_size
-        buffer = Windows.get_buffer_info
-        if buffer
-            if buffer[:window_right] > 0 && buffer[:window_bottom] > 0
-                [buffer[:window_right] - buffer[:window_left] + 1,
-                 buffer[:window_bottom] - buffer[:window_top] + 1]
-            end
-        end
-    end
-    module_function :window_size
+    private
 
 
     # Save the reset text and background colors
     buffer = Windows.get_buffer_info
     @reset_colors = buffer && buffer[:text_attributes]
+
+
+    # Get the current console window size.
+    #
+    # @return [Array, nil] Returns a two-dimensional array of [cols, rows], or
+    #   nil if the console has been redirected.
+    def _window_size
+        unless @window_size
+            buffer = Windows.get_buffer_info
+            if buffer
+                if buffer[:window_right] > 0 && buffer[:window_bottom] > 0
+                    @window_size = [buffer[:window_right] - buffer[:window_left] + 1,
+                                    buffer[:window_bottom] - buffer[:window_top] + 1]
+                else
+                    @window_size = -1
+                end
+            else
+                @window_size = -1
+            end
+        end
+        @window_size == -1 ? nil : @window_size
+    end
+    module_function :_window_size
 
 
     # Write a line of text to the console, with optional foreground and
@@ -166,7 +183,7 @@ module Console
     # @param text [String] The text to be written to the console.
     # @param fg [Symbol, Integer] An optional foreground colour name or value.
     # @param bg [Symbol, Integer] An optional background color name or value.
-    def write(text, fg = nil, bg = nil)
+    def _write(text, fg = nil, bg = nil)
         if fg || bg
             reset = @reset_colors
             if fg
@@ -195,44 +212,40 @@ module Console
             Windows.set_color(reset)
         end
     end
-    module_function :write
+    module_function :_write
 
 
     # Send a line of text to the screen, terminating with a new-line.
     #
-    # @see #write
-    def puts(text = nil, fg = nil, bg = nil)
+    # @see #_write
+    def _puts(text = nil, fg = nil, bg = nil)
         if @status
-            self.clear_line (@status.length / self.width) + 1
+            _clear_line (@status.length / self.width) + 1
         end
-        @lock.synchronize do
-            write("#{text}\n", fg, bg)
-            if @status
-                write(@status, @status_fg, @status_bg)
-            end
+        _write("#{text}\r\n", fg, bg)
+        if @status
+            _write(@status, @status_fg, @status_bg)
         end
     end
-    module_function :puts
+    module_function :_puts
 
 
     # Clears the current line
-    def clear_line(lines = 1)
+    def _clear_line(lines = 1)
         raise ArgumentError, "Number of lines to clear (#{lines}) must be > 0" if lines < 1
         buffer = Windows.get_buffer_info
         if buffer
-            @lock.synchronize do
-                y = buffer[:cursor_y]
-                while lines > 0
-                    Windows.set_cursor_position(0, y)
-                    STDOUT.write ' ' * (buffer[:window_right] - buffer[:window_left] + 1)
-                    Windows.set_cursor_position(0, y)
-                    lines -= 1
-                    y -= 1
-                end
+            y = buffer[:cursor_y]
+            while lines > 0
+                Windows.set_cursor_position(0, y)
+                STDOUT.write ' ' * (buffer[:window_right] - buffer[:window_left] + 1)
+                Windows.set_cursor_position(0, y)
+                lines -= 1
+                y -= 1
             end
         end
     end
-    module_function :clear_line
+    module_function :_clear_line
 
 end
 

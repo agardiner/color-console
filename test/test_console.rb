@@ -1,5 +1,11 @@
 require 'color_console'
 
+Console::FOREGROUND_COLORS.each do |lbl, color|
+    Console.puts "This is a #{lbl} line", color
+end
+Console::BACKGROUND_COLORS.each do |lbl, color|
+    Console.puts "This is a white line", :white, color
+end
 
 Console.puts "This is some normal text"
 Console.puts
