@@ -25,13 +25,16 @@ Console.write "Red ", :red
 Console.write "Green", :green
 ```
 
-ColorConsole also supports:
-* Setting the console title: The title bar of the console window can be set using `Console.title = 'My title'`.
-* Status messages: Status messages (i.e. a line of text at the current scroll position) can be output and
+## Features
+
+In addition to `Console.puts` and `Console.write` for outputting text in color, ColorConsole also supports:
+* __Setting the console title__: The title bar of the console window can be set using `Console.title = 'My title'`.
+* __Status messages__: Status messages (i.e. a line of text at the current scroll position) can be output and
   updated at any time. The status message will remain at the current scroll point even as new text is output
   using `Console.puts`.
-* Progress bars: A progress bar can be rendered like a status message, but with a pseudo-graphical representation
+* __Progress bars__: A progress bar can be rendered like a status message, but with a pseudo-graphical representation
   of the current completion percentage:
+
     ```ruby
     (0..100).do |i|
         Console.show_progress('Processing data', i)
@@ -42,7 +45,8 @@ ColorConsole also supports:
     ```
     [==============    35%                   ]  Processing data
     ```
-* Tables: Data can be output in a tabular representation:
+* __Tables__: Data can be output in a tabular representation:
+
     ```ruby
     HEADER_ROW = ['Column 1', 'Column 2', 'Column 3', 'Column 4']
     MIXED_ROW = [17,
