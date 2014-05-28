@@ -2,12 +2,37 @@ module Console
 
     # Displays an array of arrays as a table of data. The content of each row
     # is aligned and wrapped if necessary to fit the column widths.
+    #
+    # @param rows [Array] An array of arrays containing the data to be output.
+    #   The number of elements in the first array determines the number of
+    #   columns that will be output, unless the :column_widths options is passed;
+    #   in that case, the number of column width specifications determines the
+    #   number of columns output.
+    # @param opts [Hash] An options hash containing settings that determine how
+    #   the table is rendered.
+    # @options opts [Array<Fixnum>] :col_widths The width to use for each column.
+    # @option opts [Fixnum] :width The width of the table. If omitted, the width
+    #   is determined instead by the :col_widths option.
+    # @options opts [Char] :col_sep The character to use between each column.
+    #   If omitted, no column line is drawn. Note though that each column is
+    #   rendered with 1 space of padding on the left and right.
+    # @options opts [Char] :row_sep The character to use to render a row
+    #   separator. If omitted, no row separators are rendered.
+    # @options opts [Fixnum] :indent The number of characters to indent the
+    #   table from the left margin of the console. If omitted, no indent is
+    #   used.
+    # @options opts [Symbol] :color The color in which to render the text of the
+    #   table.
+    # @options opts [Symbol] :text_color The color in which to render the text
+    #   of the table.
+    # @options opts [Symbol] :background_color The color in which to render the
+    #   background of the table.
     def display_table(rows, opts = {})
         return unless rows && rows.size > 0 && rows.first.size > 0
         col_widths = opts[:col_widths]
         unless col_widths
             col_count = rows.first.size
-            avail_width = (width || 10000) - opts.fetch(:indent, 0) -
+            avail_width = (opts[:width] || ((width || 10000) - opts.fetch(:indent, 0))) -
                 (" #{opts[:col_sep]} ".length * col_count)
             col_widths = _calculate_widths(rows, col_count, avail_width - 1)
         end
@@ -25,6 +50,13 @@ module Console
     # Displays a single +row+ of data within columns of +widths+ width. If the
     # contents of a cell exceeds the available width, it is wrapped, and the row
     # is displayed over multiple lines.
+    #
+    # @param row [Array] An array of data to display as a single row.
+    # @param widths [Array<Fixnum>] An array of column widths to use for each
+    #   column.
+    # @param opts [Hash] An options hash containing settings that determine how
+    #   the table is rendered.
+    # @see #display_table for details of the supported options.
     def display_row(row, widths, opts = {})
         return unless row && row.size > 0
         @lock.synchronize do
@@ -89,7 +121,8 @@ module Console
             _write(' ' * indent)
             _write("#{col_sep} ", fg, bg) if col_sep
             line = (0...widths.size).map do |col|
-                "%#{row[col].is_a?(Numeric) ? '' : '-'}#{widths[col]}s" % lines[col][i]
+                "%#{row[col].is_a?(Numeric) ? '' : '-'}#{widths[col]}s" %
+                (lines[col] && lines[col][i])
             end.join(" #{col_sep} ")
             _write(line, fg, bg)
             _write(" #{col_sep}", fg, bg) if col_sep
@@ -100,7 +133,7 @@ module Console
     module_function :_display_row
 
 
-    # Outputs a row separator
+    # Outputs a row separator line
     def _output_row_sep(widths, opts)
         fg = opts.fetch(:text_color, opts.fetch(:color, :cyan))
         bg = opts[:background_color]

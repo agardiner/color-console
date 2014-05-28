@@ -23,13 +23,50 @@ Console.puts "Yet more text", nil, :blue    # Outputs text using the current for
 Console.write "Blue ", :blue
 Console.write "Red ", :red
 Console.write "Green", :green
-
 ```
 
 ColorConsole also supports:
+* Setting the console title: The title bar of the console window can be set using `Console.title = 'My title'`.
 * Status messages: Status messages (i.e. a line of text at the current scroll position) can be output and
   updated at any time. The status message will remain at the current scroll point even as new text is output
   using `Console.puts`.
 * Progress bars: A progress bar can be rendered like a status message, but with a pseudo-graphical representation
-  of the current completion percentage.
+  of the current completion percentage:
+    ```ruby
+    (0..100).do |i|
+        Console.show_progress('Processing data', i)
+    end
+    Console.clear_progress
+    ```
+    Output:
+    ```
+    [==============    35%                   ]  Processing data
+    ```
+* Tables: Data can be output in a tabular representation:
+    ```ruby
+    HEADER_ROW = ['Column 1', 'Column 2', 'Column 3', 'Column 4']
+    MIXED_ROW = [17,
+                 'A somewhat longer column',
+                 'A very very very long column that should wrap multple lines',
+                 'Another medium length column']
+    SECOND_ROW = [24,
+                  'Lorem ipsum',
+                  'Some more text',
+                  'Lorem ipsum dolor sit amet']
+
+    Console.display_table([HEADER_ROW, MIXED_ROW, SECOND_ROW], width: 100,
+                          col_sep: '|', row_sep: '-')
+    ```
+    Output:
+    ```
+    +----------+--------------------------+-----------------------------+-----------------------------+
+    | Column 1 | Column 2                 | Column 3                    | Column 4                    |
+    +----------+--------------------------+-----------------------------+-----------------------------+
+    |       17 | A somewhat longer column | A very very very long       | Another medium length       |
+    |          |                          | column that should wrap     | column                      |
+    |          |                          | multple lines               |                             |
+    +----------+--------------------------+-----------------------------+-----------------------------+
+    |       24 | Lorem ipsum              | Some more text              | Lorem ipsum dolor sit amet  |
+    +----------+--------------------------+-----------------------------+-----------------------------+
+    ```
 
