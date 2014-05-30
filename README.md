@@ -2,6 +2,8 @@
 
 ColorConsole is a small cross-platform library for outputting text to the console.
 
+On Windows, FFI is used to dynamically link to the Windows Console API functions, while on other platforms, ANSI escape sequences are used. As such, there are no dependencies and no libraries to install other than this gem.
+
 
 ## Usage
 
