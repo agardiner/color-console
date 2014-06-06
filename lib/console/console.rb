@@ -10,11 +10,10 @@ end
 # provide color and progress-bar functionality.
 module Console
 
-    attr_reader :status, :status_enabled
-
-
     # Mutex used to ensure we don't intermingle output from multiple threads
     @lock = Mutex.new
+    # Holds the current status content (if any)
+    @status = nil
 
 
     # Returns the width of the console window
