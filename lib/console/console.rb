@@ -12,8 +12,14 @@ module Console
 
     # Mutex used to ensure we don't intermingle output from multiple threads
     @lock = Mutex.new
+    # Window size, if available
+    @window_size = nil
     # Holds the current status content (if any)
     @status = nil
+    # Foreground color for status content
+    @status_fg = nil
+    # Background color for status content
+    @status_bg = nil
 
 
     # Returns the width of the console window

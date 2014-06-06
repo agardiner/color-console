@@ -106,7 +106,7 @@ module Console
     # @param bg [Symbol, String] An optional background color name or ANSI code.
     def _puts(text = nil, fg = nil, bg = nil)
         if @status
-            _clear_line (@status.length / self.width) + 1
+            _clear_line((@status.length / self.width) + 1)
         end
         _write("#{text}", fg, bg)
         STDOUT.write "\n"

@@ -15,7 +15,7 @@ module Console
             @lock.synchronize do
                 if @status
                     # Clear existing status
-                    _clear_line (@status.length / self.width) + 1
+                    _clear_line((@status.length / self.width) + 1)
                 end
                 @completed = nil
                 @status = msg
