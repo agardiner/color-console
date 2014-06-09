@@ -20,6 +20,8 @@ module Console
     @status_fg = nil
     # Background color for status content
     @status_bg = nil
+    # Whether status text is currently displayed
+    @status_displayed = false
 
 
     # Returns the width of the console window

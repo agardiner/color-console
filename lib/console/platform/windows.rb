@@ -184,6 +184,10 @@ module Console
     # @param fg [Symbol, Integer] An optional foreground colour name or value.
     # @param bg [Symbol, Integer] An optional background color name or value.
     def _write(text, fg = nil, bg = nil)
+        if @status_displayed
+            _clear_line (@status.length / self.width) + 1
+            @status_displayed = false
+        end
         if fg || bg
             reset = @reset_colors
             if fg
@@ -221,12 +225,14 @@ module Console
     # @param fg [Symbol, Integer] An optional foreground colour name or value.
     # @param bg [Symbol, Integer] An optional background color name or value.
     def _puts(text = nil, fg = nil, bg = nil)
-        if @status
+        if @status_displayed
             _clear_line (@status.length / self.width) + 1
+            @status_displayed = false
         end
         _write("#{text}\r\n", fg, bg)
         if @status
             _write(@status, @status_fg, @status_bg)
+            @status_displayed = true
         end
     end
     module_function :_puts

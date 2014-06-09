@@ -13,9 +13,10 @@ module Console
     def status(msg, opts = {})
         if self.width
             @lock.synchronize do
-                if @status
+                if @status_displayed
                     # Clear existing status
                     _clear_line((@status.length / self.width) + 1)
+                    @status_displayed = false
                 end
                 @completed = nil
                 @status = msg
@@ -23,6 +24,7 @@ module Console
                     @status_fg = opts.fetch(:text_color, opts.fetch(:color, :cyan))
                     @status_bg = opts[:background_color]
                     _write @status, @status_fg, @status_bg
+                    @status_displayed = true
                 end
             end
         end
