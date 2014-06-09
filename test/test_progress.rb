@@ -14,21 +14,22 @@ Console.puts "Done"
 @mut = Mutex.new
 @prog = {}
 
-def do_work(tag, tot)
+def do_work(tag, tag_color, tot)
     (0..tot).each do |i|
         sleep rand
         @mut.synchronize do
             @prog[tag] = [i, tot]
             iter, total = @prog.values.reduce([0, 0]){ |s, v| [s[0] + v[0], s[1] + v[1]] }
-            Console.puts "Iter: #{iter}, Total: #{total}"
+            Console.write tag, tag_color
+            Console.puts "  Iter: #{iter}, Total: #{total}"
             Console.show_progress "Extracting data...", iter, total
         end
     end
 end
 
 Console.puts "Starting multi-threaded...", :green
-a = Thread.new{ do_work('A', 15) }
-b = Thread.new{ do_work('B', 10) }
+a = Thread.new{ do_work('A', :cyan, 15) }
+b = Thread.new{ do_work('B', :light_magenta, 10) }
 a.join
 b.join
 Console.clear_progress
