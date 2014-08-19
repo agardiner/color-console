@@ -11,6 +11,16 @@ Console.puts "This is some normal text"
 Console.puts
 Console.puts "This is some red text", :red
 Console.puts "This is red text on a blue background", :red, :blue
+
+
+# Test output of line same length as console width
+text = '*' * Console.width
+Console.puts text
+Console.puts '* There should be no blank line above this line'
+Console.puts text
+
+
+# Test status and progress bars
 Console.show_progress "In progress", 35, :color => :green
 sleep 3
 Console.puts "Here is a new line"
@@ -22,4 +32,5 @@ sleep 2
 Console.show_progress "Long progress", 80, :bar_length => 100
 sleep 2
 Console.status nil
+
 

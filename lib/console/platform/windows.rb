@@ -229,7 +229,14 @@ module Console
             _clear_line (@status.length / self.width) + 1
             @status_displayed = false
         end
-        _write("#{text}\r\n", fg, bg)
+        buffer = Windows.get_buffer_info
+        if buffer && text && text.length > 0 &&
+            text.length == (buffer[:window_right] + 1 - buffer[:cursor_x])
+            # Text length is same as width of window
+            _write("#{text}", fg, bg)
+        else
+            _write("#{text}\r\n", fg, bg)
+        end
         if @status
             _write(@status, @status_fg, @status_bg)
             @status_displayed = true
