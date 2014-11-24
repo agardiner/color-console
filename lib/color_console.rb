@@ -1,2 +1,2 @@
-require 'console/console'
+require 'color_console/console'
 
