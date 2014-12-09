@@ -1,8 +1,8 @@
 # ColorConsole
 
-ColorConsole is a small cross-platform library for outputting text to the console.
+ColorConsole is a small cross-platform library for outputting color text to the console, as well as providing utilities for drawing progress bars and outputting tabular data.
 
-On Windows, FFI is used to dynamically link to the Windows Console API functions, while on other platforms, ANSI escape sequences are used. As such, there are no dependencies and no libraries to install other than this gem.
+On Windows, Fiddler (under MRI) or FFI (other engines) is used to dynamically link to the Windows Console API functions, while on other platforms, ANSI escape sequences are used. As such, there are no dependencies and no libraries to install other than this gem.
 
 
 ## Usage
@@ -74,5 +74,15 @@ In addition to `Console.puts` and `Console.write` for outputting text in color, 
     +----------+--------------------------+-----------------------------+-----------------------------+
     |       24 | Lorem ipsum              | Some more text              | Lorem ipsum dolor sit amet  |
     +----------+--------------------------+-----------------------------+-----------------------------+
+    ```
+* __Color Logging__: If you are using java.util.logging under JRuby, or the Ruby logging library Log4r, you can obtain colour log messages by replacing the console handler with one provided by this gem:
+    ```ruby
+    # If using Log4r for logging...
+    require 'color_console/log4r_logger'
+    Console.replace_console_logger(level: :info)
+
+    # Or under JRuby with java.util.logging...
+    require 'color_console/java_util_logger'
+    Console.replace_console_logger(level: :fine, format: '%4$-6s %5$s%n')
     ```
 
