@@ -49,7 +49,7 @@ module Console
         # suitable for output to the console.
         class RubyFormatter < Formatter
 
-            DEFAULT_FORMAT  = '%4$-6s %5$s%n'
+            DEFAULT_FORMAT  = '%4$-6s  %5$s%n'
 
             # A format string to use when formatting a log record.
             # @see Java function String.format for the format string syntax. The
