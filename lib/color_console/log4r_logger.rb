@@ -33,7 +33,8 @@ module Console
                         thread = Log4r::NDC.peek.to_s.upcase[0, 2]
                         level = Log4r::LNAMES[event.level]
                         case
-                        when event.data.is_a?(Exception) || (RUBY_ENGINE == 'jruby' && event.data.java_kind_of?(java.lang.Throwable))
+                        when event.data.is_a?(Exception) || (RUBY_ENGINE == 'jruby' &&
+                                                             event.data.java_kind_of?(java.lang.Throwable))
                             msg = Exception.format(event.data)
                         when event.data.is_a?(Array)
                             msg = event.data
@@ -44,7 +45,7 @@ module Console
                         else
                             msg = Console.wrap_text(event.data, @console_width - 16)
                             msg = msg.each_with_index.map do |line, i|
-                              "%-8s %-2s  %s" % [[level][i], [thread][i], line]
+                                "%-8s %-2s  %s" % [[level][i], [thread][i], line]
                             end.join("\n")
                         end
                         msg

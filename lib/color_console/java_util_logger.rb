@@ -49,7 +49,7 @@ module Console
         # suitable for output to the console.
         class RubyFormatter < Formatter
 
-            DEFAULT_FORMAT  = '%4$-6s  %5$s%n'
+            DEFAULT_FORMAT  = '%4$-6s  %7$s%5$s%n'
 
             # A format string to use when formatting a log record.
             # @see Java function String.format for the format string syntax. The
@@ -59,9 +59,15 @@ module Console
             #   - logger_name The name of the logger that logged the record
             #   - level   The level of the message
             #   - message The log message
-            #   - thrown  Any exception that forms part of the log record.
+            #   - thrown  Any exception that forms part of the log record
+            #   - spacer  A spacer that will consist of 2 spaces if the log level
+            #       is config or greater.
             attr_accessor :format_string
 
+            # Width at which to split lines
+            attr_accessor :width
+            # Amount by which to indent lines
+            attr_accessor :indent
 
             # Constructs a new formatter for formatting log records according to
             # a format string.
@@ -71,6 +77,13 @@ module Console
             def initialize(format = DEFAULT_FORMAT)
                 super()
                 @format_string = format
+                @width = Console.width
+                if @format_string != DEFAULT_FORMAT
+                    mark = java.lang.String.format(@format_string, '', '', '', '', '**', nil, nil)
+                    @indent = mark.index('**')
+                else
+                    @indent = 8
+                end
             end
 
 
@@ -82,13 +95,31 @@ module Console
                       when JavaUtilLogger::Level::FINEST then 'DEBUG'
                       else log_record.level
                       end
-                java.lang.String.format(@format_string,
-                                        log_record.millis,
-                                        log_record.logger_name,
-                                        log_record.logger_name,
-                                        lvl,
-                                        log_record.message,
-                                        log_record.thrown)
+                indent = @indent || 0
+                spacer = ''
+                wrap_width = @width - indent
+                if log_record.level.intValue < JavaUtilLogger::Level::INFO.intValue
+                    spacer = '  '
+                    wrap_width -= 2
+                end
+
+                msg = wrap_width > 0 ? Console.wrap_text(log_record.message, wrap_width) :
+                    [log_record.message]
+                msg = msg.each_with_index.map do |line, i|
+                    if i == 0
+                        java.lang.String.format(@format_string,
+                                                log_record.millis,
+                                                log_record.logger_name,
+                                                log_record.logger_name,
+                                                lvl,
+                                                msg[i],
+                                                log_record.thrown,
+                                                spacer)
+                    else
+                        java.lang.String.format(@format_string,
+                                                '', '', '', '', msg[i], '', spacer)
+                    end
+                end.join("\n")
             end
 
         end
