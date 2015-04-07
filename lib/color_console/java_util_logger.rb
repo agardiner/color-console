@@ -79,7 +79,7 @@ module Console
                 @format_string = format
                 @width = Console.width
                 if @format_string != DEFAULT_FORMAT
-                    mark = java.lang.String.format(@format_string, '', '', '', '', '**', nil, nil)
+                    mark = java.lang.String.format(@format_string, Time.now, '', '', '', '**', nil, nil)
                     @indent = mark.index('**')
                 else
                     @indent = 8
