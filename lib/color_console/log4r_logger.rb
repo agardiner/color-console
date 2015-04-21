@@ -91,11 +91,14 @@ module Console
         when String, Symbol then Log4r::LNAMES.index(options[:level].to_s.upcase)
         end
 
-        # Remove any existing console handler
         log = logger ? Log4r::Logger[logger] : Log4r::Logger.root
         log = Log4r::Logger.new(logger) unless log
-        log.outputters.each do |o|
-            log.remove(o.name) if h.is_a?(Log4r::StdoutOutputter)
+
+        # Remove any existing console handler
+        Log4r::Logger.each_logger do |log|
+            log.outputters.each do |o|
+                log.remove(o.name) if o.is_a?(Log4r::StdoutOutputter)
+            end
         end
 
         # Add a ColorConsoleHandler
