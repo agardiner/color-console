@@ -22,6 +22,7 @@ module Console
             def format(event)
                 @fg = case event.level
                 when Log4r::INFO then :white
+                when Log4r::CONFIG then :cyan
                 when Log4r::WARNING then :yellow
                 when Log4r::ERROR then :red
                 when Log4r::DEBUG then :dark_gray
