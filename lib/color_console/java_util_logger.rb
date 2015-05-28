@@ -49,7 +49,10 @@ module Console
         # suitable for output to the console.
         class RubyFormatter < Formatter
 
-            DEFAULT_FORMAT  = '%4$-6s  %7$s%5$s%n'
+            # Default format pattern
+            DEFAULT_FORMAT  = '%4$-6s  %7$s%5$s'
+            # System line-ending
+            LINE_END = java.lang.String.format('%n')
 
             # A format string to use when formatting a log record.
             # @see Java function String.format for the format string syntax. The
@@ -63,38 +66,36 @@ module Console
             #   - spacer  A spacer that will consist of 2 spaces if the log level
             #       is config or greater.
             attr_accessor :format_string
-
             # Width at which to split lines
             attr_accessor :width
             # Amount by which to indent lines
             attr_accessor :indent
+            # Level labels
+            attr_reader :level_labels
+
 
             # Constructs a new formatter for formatting log records according to
             # a format string.
             #
             # @param format The format string to use when building a String for
             #   logging.
-            def initialize(format = DEFAULT_FORMAT)
+            def initialize(format = DEFAULT_FORMAT, width = nil)
                 super()
                 @format_string = format
-                @width = Console.width
-                if @format_string != DEFAULT_FORMAT
-                    mark = java.lang.String.format(@format_string, Time.now, '', '', '', '**', nil, nil)
-                    @indent = mark.index('**')
-                else
-                    @indent = 8
-                end
+                @width = width || Console.width
+                mark = java.lang.String.format(@format_string, Time.now,
+                                               '', '', '', '!$!', nil, nil)
+                @indent = mark.lines.first.index('!$!')
+                @level_labels = Hash.new{ |h, k| h[k] = k }
+                @level_labels[JavaUtilLogger::Level::WARNING] = 'WARN'
+                @level_labels[JavaUtilLogger::Level::SEVERE] = 'ERROR'
+                @level_labels[JavaUtilLogger::Level::FINEST] = 'DEBUG'
             end
 
 
             # Format a log record and return a string for publishing by a log handler.
             def format(log_record)
-                lvl = case log_record.level
-                      when JavaUtilLogger::Level::WARNING then 'WARN'
-                      when JavaUtilLogger::Level::SEVERE then 'ERROR'
-                      when JavaUtilLogger::Level::FINEST then 'DEBUG'
-                      else log_record.level
-                      end
+                lvl = @level_labels[log_record.level]
                 indent = @indent || 0
                 spacer = ''
                 wrap_width = @width - indent
@@ -105,21 +106,25 @@ module Console
 
                 msg = wrap_width > 0 ? Console.wrap_text(log_record.message, wrap_width) :
                     [log_record.message]
-                msg = msg.each_with_index.map do |line, i|
+                sb = java.lang.StringBuilder.new()
+                msg.each_with_index do |line, i|
                     if i == 0
-                        java.lang.String.format(@format_string,
-                                                log_record.millis,
-                                                log_record.logger_name,
-                                                log_record.logger_name,
-                                                lvl,
-                                                msg[i],
-                                                log_record.thrown,
-                                                spacer)
+                        fmt = java.lang.String.format(@format_string,
+                                                      log_record.millis,
+                                                      log_record.logger_name,
+                                                      log_record.logger_name,
+                                                      lvl,
+                                                      msg[i],
+                                                      nil, #log_record.thrown.to_s,
+                                                      spacer)
                     else
-                        java.lang.String.format(@format_string,
-                                                '', '', '', '', msg[i], '', spacer)
+                        fmt = java.lang.String.format(@format_string,
+                                                      log_record.millis, '', '', '', msg[i], nil, spacer)
                     end
-                end.join("\n")
+                    sb.append(fmt)
+                    sb.append(LINE_END) if @width < 0 || fmt.length < @width
+                end
+                sb.toString()
             end
 
         end
@@ -148,6 +153,9 @@ module Console
 
         # Add a ColorConsoleHandler
         h = JavaUtilLogger::ColorConsoleHandler.new(format)
+        if lbls = options[:level_labels]
+            h.formatter.level_labels.merge!(lbls)
+        end
         l.addHandler(h)
 
         # Set the log level

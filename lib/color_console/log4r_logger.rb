@@ -44,12 +44,15 @@ module Console
                             when Array then msg[0][0] = "%-8s %-2s  %s" % [level, thread, msg[0][0]]
                             end
                         else
-                            msg = Console.wrap_text(event.data, @console_width - 16)
-                            msg = msg.each_with_index.map do |line, i|
-                                "%-8s %-2s  %s" % [[level][i], [thread][i], line]
-                            end.join("\n")
+                            msg_lines = Console.wrap_text(event.data, @console_width - 13)
+                            msg = ""
+                            msg_lines.each_with_index do |line, i|
+                                fmt = "%-8s %-2s  %s" % [[level][i], [thread][i], line]
+                                msg += fmt
+                                msg += "\n" if @console_width < 0 || fmt.length < @console_width
+                            end
                         end
-                        msg
+                        msg.chomp
                     rescue Object => ex
                         "(Unable to format event.data due to #{ex})\n"
                     end
