@@ -115,7 +115,7 @@ module Console
                                                       log_record.logger_name,
                                                       lvl,
                                                       msg[i],
-                                                      nil, #log_record.thrown.to_s,
+                                                      log_record.thrown,
                                                       spacer)
                     else
                         fmt = java.lang.String.format(@format_string,
