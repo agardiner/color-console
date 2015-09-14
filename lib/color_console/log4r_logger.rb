@@ -63,10 +63,10 @@ module Console
             def write(data)
                 if data.is_a?(Array)
                     if data[0].is_a?(String) && (data.length == 0 || data[1].is_a?(Symbol))
-                        Console.puts *data
+                        Console.puts(*data)
                     else
                         data.each do |chunk|
-                            Console.write *chunk
+                            Console.write(*chunk)
                         end
                         Console.puts
                     end
@@ -99,9 +99,9 @@ module Console
         log = Log4r::Logger.new(logger) unless log
 
         # Remove any existing console handler
-        Log4r::Logger.each_logger do |log|
-            log.outputters.each do |o|
-                log.remove(o.name) if o.is_a?(Log4r::StdoutOutputter)
+        Log4r::Logger.each_logger do |l|
+            l.outputters.each do |o|
+                l.remove(o.name) if o.is_a?(Log4r::StdoutOutputter)
             end
         end
 
