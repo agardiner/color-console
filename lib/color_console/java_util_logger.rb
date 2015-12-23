@@ -11,8 +11,8 @@ module Console
         include_package 'java.util.logging'
 
 
-        # Extends the java.util.ConsoleHandler, adding colorised logging output to
-        # the console.
+        # Extends the java.util.logging.ConsoleHandler, adding colorised logging
+        # output to the console.
         class ColorConsoleHandler < ConsoleHandler
 
             def initialize(format = RubyFormatter::DEFAULT_FORMAT)
@@ -103,9 +103,8 @@ module Console
                     spacer = '  '
                     wrap_width -= 2
                 end
-
-                msg = wrap_width > 0 ? Console.wrap_text(log_record.message, wrap_width) :
-                    [log_record.message]
+                msg_txt = self.formatMessage(log_record)
+                msg = wrap_width > 0 ? Console.wrap_text(msg_txt, wrap_width) : [msg_txt]
                 sb = java.lang.StringBuilder.new()
                 msg.each_with_index do |line, i|
                     if i == 0
