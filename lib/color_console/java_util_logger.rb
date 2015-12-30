@@ -72,6 +72,12 @@ module Console
             attr_accessor :indent
             # Level labels
             attr_reader :level_labels
+            # Optional proc for processing formatted msg before line wrapping.
+            # If a proc is set on this formatter, it will be called with the
+            # log record and message text before the message is formatted. It
+            # should return the revised message text to be logged (or nil if
+            # the message should be ignored).
+            attr_accessor :msg_proc
 
 
             # Constructs a new formatter for formatting log records according to
@@ -94,7 +100,13 @@ module Console
 
 
             # Format a log record and return a string for publishing by a log handler.
+            # If a +msg_proc+ handler has been set on this formatter, it will get passed
+            # the +log_record+ for pre-processing before it is formatted by this method.
             def format(log_record)
+                msg_txt = self.formatMessage(log_record)
+                msg_txt = msg_proc.call(log_record, msg_txt) if msg_proc
+                return unless msg_txt
+
                 lvl = @level_labels[log_record.level]
                 indent = @indent || 0
                 spacer = ''
@@ -103,7 +115,6 @@ module Console
                     spacer = '  '
                     wrap_width -= 2
                 end
-                msg_txt = self.formatMessage(log_record)
                 msg = wrap_width > 0 ? Console.wrap_text(msg_txt, wrap_width) : [msg_txt]
                 sb = java.lang.StringBuilder.new()
                 msg.each_with_index do |line, i|
