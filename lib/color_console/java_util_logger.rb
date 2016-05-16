@@ -88,7 +88,7 @@ module Console
             def initialize(format = DEFAULT_FORMAT, width = nil)
                 super()
                 @format_string = format
-                @width = width || Console.width
+                @width = width || Console.width || -1
                 mark = java.lang.String.format(@format_string, Time.now,
                                                '', '', '', '!$!', nil, nil)
                 @indent = mark.lines.first.index('!$!')
