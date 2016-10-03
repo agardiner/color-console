@@ -36,7 +36,10 @@ module Console
                         case
                         when event.data.is_a?(Exception) || (RUBY_ENGINE == 'jruby' &&
                                                              event.data.java_kind_of?(java.lang.Throwable))
-                            msg = Exception.format(event.data)
+                            e = event.data
+                            msg = "%-8s %-2s  %s: %s\n" % [level, thread, e.class, e.message]
+                            bt = e.backtrace.take(3).map{ |s| "                 from #{s}" }.join("\n")
+                            msg += bt
                         when event.data.is_a?(Array)
                             msg = event.data
                             case msg.first
