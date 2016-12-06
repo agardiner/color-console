@@ -158,7 +158,12 @@ module Console
         # Remove any existing console handler
         l = Java::JavaUtilLogging::Logger.getLogger(logger)
         l.getHandlers.each do |h|
-            l.removeHandler(h) if h.is_a?(Java::JavaUtilLogging::ConsoleHandler)
+            case h
+            when Console::JavaUtilLogger::ColorConsoleHandler
+                return
+            when Java::JavaUtilLogging::ConsoleHandler
+                l.removeHandler(h)
+            end
         end
 
         # Add a ColorConsoleHandler
