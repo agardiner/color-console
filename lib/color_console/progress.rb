@@ -45,7 +45,7 @@ module Console
     # @see #status for other supported options
     def show_progress(label, complete, opts = {})
         if self.width
-            opts = {total: opts} if opts.is_a?(Fixnum)
+            opts = {total: opts} if opts.is_a?(Numeric)
             total = opts.fetch(:total, 100)
             complete = total if complete > total
             bar_length = opts.fetch(:bar_length, 40)
