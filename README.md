@@ -1,6 +1,6 @@
 # ColorConsole
 
-ColorConsole is a small cross-platform library for outputting color text to the console, as well as providing utilities for drawing progress bars and outputting tabular data.
+ColorConsole is a small *cross-platform* library for outputting color text to the console on both Linux and Windows, as well as providing utilities for drawing progress bars and outputting tabular data.
 
 On Windows, Fiddler (under MRI) or FFI (other engines) is used to dynamically link to the Windows Console API functions, while on other platforms, ANSI escape sequences are used. As such, there are no dependencies and no libraries to install other than this gem.
 

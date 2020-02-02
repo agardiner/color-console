@@ -1,8 +1,8 @@
 GEMSPEC = Gem::Specification.new do |s|
     s.name = "color-console"
-    s.version = "0.3.4"
+    s.version = "0.3.5"
     s.authors = ["Adam Gardiner"]
-    s.date = "2016-10-03"
+    s.date = "2020-02-02"
     s.summary = "ColorConsole is a cross-platform library for outputting colored text to the console"
     s.description = <<-EOQ
         ColorConsole supports cross-platform (ANSI and Windows) colored text output to the console.
