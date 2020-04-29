@@ -11,7 +11,7 @@ module Console
     # @option opts [Symbol] :background_color The background color to use when
     #   rendering the status message
     def status(msg, opts = {})
-        if self.width
+        if self.width && self.width > 0
             @lock.synchronize do
                 if @status_displayed
                     # Clear existing status
@@ -44,7 +44,7 @@ module Console
     # @option opts [Fixnum] :total The total number of steps; default is 100.
     # @see #status for other supported options
     def show_progress(label, complete, opts = {})
-        if self.width
+        if self.width && self.width > 0
             opts = {total: opts} if opts.is_a?(Numeric)
             total = opts.fetch(:total, 100)
             complete = total if complete > total

@@ -77,7 +77,7 @@ module Console
     # @param fg [Symbol, String] An optional foreground colour name or ANSI code.
     # @param bg [Symbol, String] An optional background color name or ANSI code.
     def _write(text, fg = nil, bg = nil)
-        if @status_displayed
+        if @status_displayed && self.width && self.width > 0
             _clear_line((@status.length / self.width) + 1)
             @status_displayed = false
         end
@@ -109,7 +109,7 @@ module Console
     # @param fg [Symbol, String] An optional foreground colour name or ANSI code.
     # @param bg [Symbol, String] An optional background color name or ANSI code.
     def _puts(text = nil, fg = nil, bg = nil)
-        if @status_displayed
+        if @status_displayed && self.width && self.width > 0
             _clear_line((@status.length / self.width) + 1)
             @status_displayed = false
         end
