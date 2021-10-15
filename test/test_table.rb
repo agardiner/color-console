@@ -34,6 +34,7 @@ Console.display_table([HEADER_ROW, MIXED_ROW], col_widths: [10, 15, 20, 40],
                       col_sep: '|', row_sep: '-', indent: 2, color: :black, background_color: :white)
 Console.puts "--- Table with calculated col widths"
 Console.display_table([HEADER_ROW, MIXED_ROW])
+Console.display_table([HEADER_ROW, MIXED_ROW], col_sep: '|', row_sep: '-')
 Console.puts "--- Table with three rows"
 Console.display_table([HEADER_ROW, MIXED_ROW, SECOND_ROW], width: 100,
                       col_sep: '|', row_sep: '-', indent: 2)

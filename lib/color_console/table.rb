@@ -33,8 +33,9 @@ module Console
         unless col_widths
             col_count = rows.first.size
             avail_width = (opts[:width] || ((width || 10000) - opts.fetch(:indent, 0))) -
-                (" #{opts[:col_sep]} ".length * col_count)
-            col_widths = _calculate_widths(rows, col_count, avail_width - 1)
+                (" #{opts[:col_sep]} ".length * col_count) - 1
+            avail_width += 3 if opts[:col_sep].to_s.size == 0
+            col_widths = _calculate_widths(rows, col_count, avail_width)
         end
 
         @lock.synchronize do
@@ -119,14 +120,18 @@ module Console
         end
         (0...line_count).each do |i|
             _write(' ' * indent)
+            used = indent
             _write("#{col_sep} ", fg, bg) if col_sep
+            used += "#{col_sep} ".size if col_sep
             line = (0...widths.size).map do |col|
                 "%#{row[col].is_a?(Numeric) ? '' : '-'}#{widths[col]}s" %
                 (lines[col] && lines[col][i])
             end.join(" #{col_sep} ")
             _write(line, fg, bg)
+            used += line.size
             _write(" #{col_sep}", fg, bg) if col_sep
-            _puts
+            used += " #{col_sep}".size if col_sep
+            _puts if used != width
         end
         _output_row_sep(widths, opts) if row_sep
     end
@@ -144,10 +149,15 @@ module Console
 
         sep_row = widths.map{ |width| row_sep * (width + 2) }
         _write(' ' * indent)
+        used = indent
         _write(corner, fg, bg)
-        _write(sep_row.join(corner), fg, bg)
+        used += corner.size
+        sep_str = sep_row.join(corner)
+        _write(sep_str, fg, bg)
+        used += sep_str.size
         _write(corner, fg, bg)
-        _puts
+        used += corner.size
+        _puts if used != width
     end
     module_function :_output_row_sep
 
